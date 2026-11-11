@@ -1,1 +1,34 @@
+name: Build ANKIT CRAFT LAUNCHER APK
 
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Extract project ZIP
+        run: |
+          mkdir extracted
+          unzip -q *.zip -d extracted
+          cp -a extracted/ANKIT_CRAFT_LAUNCHER/. .
+
+      - name: Build APK
+        run: |
+          gradle --no-daemon assembleDebug
+
+      - name: Save APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: ANKIT-CRAFT-LAUNCHER-APK
+          path: app/build/outputs/apk/debug/app-debug.apk
